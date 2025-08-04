@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <iomanip>
 using namespace std;
-
+//s盒
 int s[256] = {
     0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5,
     0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76,
@@ -41,7 +41,7 @@ int s[256] = {
     0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68,
     0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16
 };
-
+// 轮常量
 uint8_t Rcon[10][4] = {
     {0x01, 0x00, 0x00, 0x00},
     {0x02, 0x00, 0x00, 0x00},
@@ -55,12 +55,12 @@ uint8_t Rcon[10][4] = {
     {0x36, 0x00, 0x00, 0x00}
 };
 
-
+// GF有限域下的倍增
 uint8_t xtime(uint8_t x)
 {
     return (x << 1) ^ ((x & 0x80) ? 0x1b : 0x00);
 }
-
+// GF有限域下的乘法
 uint8_t gf_mul(uint8_t a, uint8_t b)
 {
     uint8_t res = 0;
@@ -72,25 +72,25 @@ uint8_t gf_mul(uint8_t a, uint8_t b)
     }
     return res;
 }
-
+// 将字符串转换为字节
 vector<int> init_data(const string& str)
 {
 	vector<int>res;
 	for (int i = 0; i < str.size() - 1; i += 2)
 	{
 		char temp1 = str[i];
-        char temp2 = str[i + 1];
+        	char temp2 = str[i + 1];
+		
 		int t = 0;
-        if (temp1 <= '9' && temp1 >= '0')t += 16 * (temp1 - '0');
-        else if (temp1 >= 'a' && temp1 <= 'f')t += 16 * (10 + temp1 - 'a');
-
-        if (temp2 <= '9' && temp2 >= '0')t += temp2 - '0';
-        else if (temp2 >= 'a' && temp2 <= 'f')t += 10 + temp2 - 'a';
+        	if (temp1 <= '9' && temp1 >= '0')t += 16 * (temp1 - '0');
+        	else if (temp1 >= 'a' && temp1 <= 'f')t += 16 * (10 + temp1 - 'a');
+       		if (temp2 <= '9' && temp2 >= '0')t += temp2 - '0';
+        	else if (temp2 >= 'a' && temp2 <= 'f')t += 10 + temp2 - 'a';
 		res.push_back(t);
 	}
 	return res;
 }
-
+//字节代换
 vector<int>subbytes(const vector<int>&a)
 {
     vector<int>b;
@@ -100,7 +100,7 @@ vector<int>subbytes(const vector<int>&a)
     }
     return b;
 }
-
+// 轮密钥加
 vector<int>addroundkey(const vector<int>& a, const vector<int>& key)
 {
     vector<int>b;
@@ -110,7 +110,7 @@ vector<int>addroundkey(const vector<int>& a, const vector<int>& key)
     }
     return b;
 }
-
+// 行移位
 vector<int> rowshift(const vector<int>& a)
 {
     vector<int>b;
@@ -140,7 +140,7 @@ vector<int> rowshift(const vector<int>& a)
     }
     return b;
 }
-
+// 列混淆
 vector<int>mixcolumn(const vector<int>& a)
 {
     vector<int>b;
@@ -178,7 +178,7 @@ vector<int>mixcolumn(const vector<int>& a)
     }
     return b;
 }
-
+// 密钥扩展
 vector<vector<int>> keyexpand(const vector<int>& a)
 {
     vector<vector<int>>key;
@@ -229,7 +229,7 @@ vector<vector<int>> keyexpand(const vector<int>& a)
 
     return key;
 }
-
+// AES加密
 vector<int>AES(const vector<int>& plain, const vector<int>& k)
 {
     auto key = keyexpand(k);
@@ -254,9 +254,9 @@ vector<int>AES(const vector<int>& plain, const vector<int>& k)
 int main()
 {
 	string PLAIN, KEY;
-    cin >> KEY >> PLAIN;
+    	cin >> KEY >> PLAIN;
 	
-    vector<int>plain = init_data(PLAIN);
+    	vector<int>plain = init_data(PLAIN);
 	vector<int>key = init_data(KEY);
     
     vector<int>cipher = AES(plain, key);
